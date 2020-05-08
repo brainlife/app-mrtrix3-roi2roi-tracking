@@ -13,7 +13,7 @@ set -x
 DIFF=$1
 rois=`jq -r '.rois' config.json`
 
-export SUBJECTS_DIR=`pwd`
+#export SUBJECTS_DIR=`pwd`
 mkdir -p resliced_rois
 for ROI in $(ls $rois/*.nii.gz); do
     output=resliced_rois/$(basename $ROI)
