@@ -199,12 +199,6 @@ for (( i=0; i<$nTracts; i+=1 )); do
 	else
 		seed=$roi1
 	fi
-								# -angle ${CURV} \
-								# -minlength ${min_length} \
-								# -maxlength ${max_length} \
-								# -step ${STEP} \
-								# -cutoff ${FOD} \
-								# -max_attempts_per_seed ${seed_max_trials} \
 
 
 	for LMAXS in ${lmaxs}; do
@@ -225,6 +219,12 @@ for (( i=0; i<$nTracts; i+=1 )); do
 								-select ${count} \
 								-seed_image ${roi1} \
 								-include ${roi2} \
+								-angle ${CURV} \
+								-minlength ${min_length} \
+								-maxlength ${max_length} \
+								-step ${STEP} \
+								-cutoff ${FOD} \
+								-max_attempts_per_seed ${seed_max_trials} \
 								-minlength ${min_length} \
 								-maxlength ${max_length} \
 								-max_attempts_per_seed ${seed_max_trials} \
