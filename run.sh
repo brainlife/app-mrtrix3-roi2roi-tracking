@@ -225,9 +225,6 @@ for (( i=0; i<$nTracts; i+=1 )); do
 								-step ${STEP} \
 								-cutoff ${FOD} \
 								-max_attempts_per_seed ${seed_max_trials} \
-								-minlength ${min_length} \
-								-maxlength ${max_length} \
-								-max_attempts_per_seed ${seed_max_trials} \
 								$output \
 								-force \
 								-nthreads $NCORE 
