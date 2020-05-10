@@ -18,7 +18,7 @@ fi
 echo "reslicing rois"
 time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer-mini:6.0.1 ./resliceROI.sh $DIFF
 
-time singularity exec -e docker://brainlife/mrtrix3:3.0_RC3 ./run.sh
+time singularity exec -e docker://brainlife/mrtrix3:3.0.0 ./run.sh
 
 time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/classificationGenerator
 

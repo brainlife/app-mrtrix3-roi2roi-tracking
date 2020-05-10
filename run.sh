@@ -41,6 +41,7 @@ reslice=`jq -r '.reslice' config.json`
 step_size=`jq -r '.stepsize' config.json`
 min_length=`jq -r '.min_length' config.json`
 max_length=`jq -r '.max_length' config.json`
+act=`jq -r '.act' config.json`
 
 if [ "$reslice" == "true" ]; then
     echo "using resliced_rois"
@@ -72,7 +73,7 @@ fi
 # generate 5-tissue-type (5TT) tracking mask
 if [[ ${mask} == 'null' ]]; then
 	[ ! -f anat.mif ] && mrconvert ${anat} anat.mif -force -nthreads $NCORE
-	[ ! -f 5tt.mif ] && 5ttgen fsl anat.mif 5tt.mif -nocrop -sgm_amyg_hipp -tempdir ./tmp -force -nthreads $NCORE
+	[ ! -f 5tt.mif ] && 5ttgen fsl anat.mif 5tt.mif -nocrop -sgm_amyg_hipp -scratch ./tmp -force -nthreads $NCORE
 else
 	echo "input 5tt mask exists. converting to mrtrix format"
 	[ ! -f 5tt.mif ] && mrconvert ${mask} -stride 1,2,3,4 5tt.mif -force -nthreads $NCORE
@@ -172,10 +173,17 @@ fi
 # done
 
 # Run trekker
+if [[ ${act} == true ]]; then
+	act_line="-act 5tt.mif"
+	backtrack_line="-backtrack"
+else
+	act_line="-mask total_mask.nii.gz"
+	backtrack_line=""
+fi
+
 pairs=($roipair)
 range=` expr ${#pairs[@]}`
 nTracts=` expr ${range} / 2`
-
 
 for (( i=0; i<$nTracts; i+=1 )); do
 	[ -f track$((i+1)).tck ] && continue
@@ -196,13 +204,22 @@ for (( i=0; i<$nTracts; i+=1 )); do
 	if [[ ${multiple_seed} == true ]]; then
 		seed=seed_${pairs[$((i*2))]}_${pairs[$((i*2+1))]}.nii.gz
 		[ ! -f $seed ] && mrcalc $roi1 $roi2 -add $seed -force -quiet -nthreads $NCORE && fslmaths $seed -bin $seed
+		l1="-include ${roi1}"
+		l2="-include ${roi2}"
+		l3=""
+		[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet &&  mrcalc $seed wm_dwi.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
 	else
 		seed=$roi1
+		l1="-include ${roi2}"
+		l2=""
+		l3="-seed_unidirectional"
+		[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet && mrcalc $roi1 $roi2 wm.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
 	fi
 
 
 	for LMAXS in ${lmaxs}; do
 		input_csd=$(eval "echo \$lmax${LMAXS}")
+		mrconvert ${input_csd} csd${LMAXS}.mif -force -nthreads $NCORE -quiet
 		echo "running tracking with mrtrix3 iFOD2 tracking on lmax ${LMAXS}"
 		for CURV in ${curvatures}; do
 			echo "curvature ${CURV}"
@@ -211,21 +228,23 @@ for (( i=0; i<$nTracts; i+=1 )); do
 				for FOD in ${min_fod_amp}; do
 					echo "FOD amplitude ${FOD}"
 					if [ ! -f track$((i+1))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.vtk ]; then
-							output="track$((i+1))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.tck"
+							#output="track$((i+1))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.tck"
 							tckgen ${input_csd} \
 								-algorithm iFOD2 \
-								-act 5tt.mif \
-								-backtrack \
+								${act_line} \
+								${backtrack_line} \
 								-select ${count} \
-								-seed_image ${roi1} \
-								-include ${roi2} \
-								-angle ${CURV} \
+								-seed_image ${seed} \
+								${l1} \
+								${l2} \
 								-minlength ${min_length} \
 								-maxlength ${max_length} \
 								-step ${STEP} \
+								-angle ${CURV} \
 								-cutoff ${FOD} \
-								-max_attempts_per_seed ${seed_max_trials} \
-								$output \
+								-trials ${seed_max_trials} \
+								${l3} \
+								track.tck \
 								-force \
 								-nthreads $NCORE 
 							fi
@@ -246,7 +265,7 @@ for (( i=0; i<$nTracts; i+=1 )); do
 	done
 
 if [ -f track*.tck ]; then
-	mv *.mif *.b* ./tmp *.nii.gz ./raw/
+	mv *.mif *.b* *.nii.gz ./raw/
 else
 	echo "tracking did not generate. please check derivatives and log files for debugging"
 	exit 1
