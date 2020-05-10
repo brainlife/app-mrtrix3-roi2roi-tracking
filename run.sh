@@ -245,6 +245,7 @@ for (( i=0; i<$nTracts; i+=1 )); do
 								-trials ${seed_max_trials} \
 								${l3} \
 								$output \
+								-quiet \
 								-force \
 								-nthreads $NCORE 
 							fi
