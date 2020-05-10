@@ -228,7 +228,7 @@ for (( i=0; i<$nTracts; i+=1 )); do
 				for FOD in ${min_fod_amp}; do
 					echo "FOD amplitude ${FOD}"
 					if [ ! -f track$((i+1))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.vtk ]; then
-							#output="track$((i+1))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.tck"
+							output="track$((i+1))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.tck"
 							tckgen ${input_csd} \
 								-algorithm iFOD2 \
 								${act_line} \
@@ -244,7 +244,7 @@ for (( i=0; i<$nTracts; i+=1 )); do
 								-cutoff ${FOD} \
 								-trials ${seed_max_trials} \
 								${l3} \
-								track.tck \
+								$output \
 								-force \
 								-nthreads $NCORE 
 							fi
