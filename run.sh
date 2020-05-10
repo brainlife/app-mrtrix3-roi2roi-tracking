@@ -268,7 +268,11 @@ for (( i=0; i<$nTracts; i+=1 )); do
 if [ -f track*.tck ]; then
 	mv *.mif *.b* *.nii.gz ./raw/
 	holder=(track$((i+1))*.tck)
-	tckedit ${holder[*]} ./track/track.tck
+	if [ ${#holder[@]} == 1 ]; then
+		mv ${holder[0]} ./track/track.tck
+	else
+		tckedit ${holder[*]} ./track/track.tck
+	fi
 	tckinfo ./track/track.tck > ./track/track_info.txt
 else
 	echo "tracking did not generate. please check derivatives and log files for debugging"
