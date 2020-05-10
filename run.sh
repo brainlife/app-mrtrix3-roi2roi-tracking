@@ -267,7 +267,7 @@ for (( i=0; i<$nTracts; i+=1 )); do
 
 if [ -f track*.tck ]; then
 	mv *.mif *.b* *.nii.gz ./raw/
-	holder=(track$((i+1))*.tck)
+	holder=(track*.tck)
 	if [ ${#holder[@]} == 1 ]; then
 		mv ${holder[0]} ./track/track.tck
 	else
