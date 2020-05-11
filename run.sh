@@ -20,6 +20,7 @@ bvecs=`jq -r '.bvecs' config.json`
 bvals=`jq -r '.bvals' config.json`
 mask=`jq -r '.mask' config.json`
 brainmask=`jq -r '.brainmask' config.json`
+white_matter_mask=`jq -r '.wm_mask' config.json`
 max_lmax=`jq -r '.lmax' config.json`
 rois=`jq -r '.rois' config.json`
 count=`jq -r '.count' config.json`
@@ -83,8 +84,15 @@ fi
 [ ! -f gm.mif ] && mrconvert -coord 3 0 5tt.mif gm.mif -force -nthreads $NCORE
 [ ! -f csf.mif ] && mrconvert -coord 3 3 5tt.mif csf.mif -force -nthreads $NCORE
 [ ! -f csf_bin.nii.gz ] && mrconvert csf.mif -stride 1,2,3,4 csf.nii.gz -force -nthreads $NCORE && fslmaths csf.nii.gz -thr 0.5 -bin csf_bin.nii.gz
-[ ! -f wm.mif ] && mrconvert -coord 3 2 5tt.mif wm.mif -force -nthreads $NCORE
-[ ! -f wm.nii.gz ] && mrconvert wm.mif -stride 1,2,3,4 wm.nii.gz -force -nthreads $NCORE
+
+if [[ ${white_matter_mask} == "null" ]]; then
+
+	[ ! -f wm.mif ] && mrconvert -coord 3 2 5tt.mif wm.mif -force -nthreads $NCORE
+	[ ! -f wm.nii.gz ] && mrconvert wm.mif -stride 1,2,3,4 wm.nii.gz -force -nthreads $NCORE
+else
+	cp ${white_matter_mask} wm.nii.gz
+fi
+
 [ ! -f ./5tt/mask.nii.gz ] && mrconvert 5tt.mif -stride 1,2,3,4 ./5tt/mask.nii.gz -force -nthreads $NCORE
 
 # brainmask
