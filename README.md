@@ -4,8 +4,11 @@
 # Mrtrix3 iFOD2 ROI Tracking (dwi) 
 
 This app will perform ensemble tracking between 2 or more cortical regions of interest (ROIs). This app uses MrTrix3.0's tckgen iFOD2 probabilistic tracking functionality to track between pairs of ROIs. If the user desires to use the Anatomically Constrained Tractography (ACT) framework, the user can set the 'act' field to true. If not desired, or if not providing adequate results, this can be set to false. This app takes in the following required inputs: DWI, rois, CSD, T1, Freesurfer. Optionally, a user can input precomputed brainmask, 5-tissue type segmentation, and white matter masks. If these inputs are not provided, the app will generate these datatypes internally and output the derivatives. This is why the Freesurfer and T1 are required inputs.
+
 To specify which ROIs are desired, the user can specify each pair as the ROI numbers found in the ROI datatype seperated by a space. For example, if the user wanted to track between ROIs 0001 and 0002 from their ROIs datatype, the user should input 0001 0002 in the roiPair field. The first value will generally be treated as the seed ROI and the second as the termination ROI. However, the user can specify seeding in both ROIs by setting the 'multiple_seeds' field to true. If the user wants to make multiple tracks, enter the user can input multiple pairs by creating a new line in the roiPair field. The output classification structure will then contain the same number of tracks as ROI pairs.
+
 This app provides the user with a large number of exposed parameters to guide and shape tractography. These include a maximum spherical harmonic order (lmax), number of repetitions, minimum and maximum length of streamlines, step size, maximum number of attempts, streamline count, FOD cutoff, and maximum angle of curvature. For lmax, the user can specify whether or not to track on a single lmax or 'ensemble' across lmax's. If the user wants to track in just a single lmax, set the 'single_lmax' field to true. Else, leave as false. If the user does not know which lmax to use, they can leave the 'lmax' field empty and the app will automatically calculate the maximum lmax based on the number of unique directions in the non-b0 weighted volumes of the DWI. For FOD cutoff, maximum angle of curvature, and step size, the user can input multiple values to perform 'ensemble tracking'. If this is desired, the user can input each value separated by a space in the respective fields (example: 0.25 0.5). The outputs of each iteration will be merged together in the final output.
+
 This app requires the ROIs and DWI datatypes to have the same dimensions. If the ROIs were generated with the 'Generate ROIs in dMRI space' app, then the ROIs and DWI will have the same dimensions. If another app was used to generate the ROIs input, the user will need to set the 'reslice' field to true. This will reslice the ROIs to have the same dimensions as the DWI image. This also assumes proper alignment between the DWI image and the ROIs.
 This app uses multiple software packages, including Freesurfer, MrTrix3.0, Matlab, and python. 
 
@@ -47,24 +50,24 @@ You can submit this App online at [https://doi.org/10.25663/brainlife.app.337](h
 ```json 
 {
    "dwi":    "testdata/dwi/dwi.nii.gz",
-    "bvals":    "testdata/dwi/dwi.bvals",
-    "bvecs":    "testdata/dwi/dwi.bvals",
-    "lmax2":    "testdata/csd/lmax2.nii.gz/",
-    "rois":    "testdata/rois/rois/",
-    "anat":    "testdata/anat/t1.nii.gz",
-    "min_length":    10,
-    "max_length":    200,
-    "lmax":    2,
-    "minfodamp":    "0.025",
-    "roiPair":    "001 0002",
-     "stepsize":    "0.25",
-    "count":    500,
-    "curvatures":    "45",
-    "maxtrials":    100000,
-    "single_lmax":    true,
-    "reslice":    false,
-    "multiple_seed":    false,
-    "act":    true
+   "bvals":    "testdata/dwi/dwi.bvals",
+   "bvecs":    "testdata/dwi/dwi.bvals",
+   "lmax2":    "testdata/csd/lmax2.nii.gz/",
+   "rois":    "testdata/rois/rois/",
+   "anat":    "testdata/anat/t1.nii.gz",
+   "min_length":    10,
+   "max_length":    200,
+   "lmax":    2,
+   "minfodamp":    "0.025",
+   "roiPair":    "001 0002",
+   "stepsize":    "0.25",
+   "count":    500,
+   "curvatures":    "45",
+   "maxtrials":    100000,
+   "single_lmax":    true,
+   "reslice":    false,
+   "multiple_seed":    false,
+   "act":    true
 } 
 ``` 
 
