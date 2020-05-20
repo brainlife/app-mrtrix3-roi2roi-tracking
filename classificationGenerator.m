@@ -19,7 +19,6 @@ for ii = 1:length(tcks);
 end
 disp(fgPath)
 [mergedFG, classification]=bsc_mergeFGandClass(fgPath);
-%fgWrite(mergedFG, 'track/track.tck', 'tck');
 
 if ~exist('wmc', 'dir')
     mkdir('wmc')
@@ -30,8 +29,8 @@ end
 
 % Amend name of tract in classification structure
 roiPair = split(roiPair);
-for ii = 1:length(roiPair)/2
-    classification.names{ii} = strcat('ROI_',roiPair{(2*ii) - 1},'_ROI_',roiPair{(2*ii)});
+for ii = 1:length(roiPair)
+    classification.names{ii} = strcat('ROI_',roiPair{ii},'_ROI_v1');
 end
 save('wmc/classification.mat','classification')
 
@@ -76,6 +75,4 @@ writetable(T, fullfile('wmc','output_fibercounts.txt'));
 
 exit;
 end
-
-
 
