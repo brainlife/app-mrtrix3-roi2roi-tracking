@@ -116,10 +116,8 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 	echo "creating seed for tract $((i))"
 	if [ ! -f $rois/ROI${pairs[$((i-1))]}.nii.gz ]; then
 		roi1=$rois/${pairs[$((i-1))]}.nii.gz
-		exclusion=$rois/${exclus[$((i-1))]}.nii.gz
 	else
 		roi1=$rois/ROI${pairs[$((i-1))]}.nii.gz
-		exclusion=$rois/ROI${exclus[$((i-1))]}.nii.gz
 	fi
 
 	if [[ ${multiple_seed} == true ]]; then
