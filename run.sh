@@ -149,7 +149,7 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 					if [ ! -f track$((i+1))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.vtk ]; then
 							output="track$((i))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.tck"
 							tckgen ${input_csd} \
-								-quiet
+								-quiet \
 								-algorithm iFOD2 \
 								${act_line} \
 								${backtrack_line} \
