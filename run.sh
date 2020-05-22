@@ -108,7 +108,14 @@ fi
 
 pairs=($roipair)
 nTracts=` expr ${#pairs[@]}`
-exclus=($exclusion)
+
+if [[ ! ${exclusion} == 'null' ]]; then
+	exclus=($exclusion)
+	exclude='true'
+else
+	exclus=""
+	exclude='false'
+fi
 
 for (( i=1; i<=$nTracts; i+=1 )); do
 	[ -f track$((i)).tck ] && continue
@@ -116,8 +123,20 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 	echo "creating seed for tract $((i))"
 	if [ ! -f $rois/ROI${pairs[$((i-1))]}.nii.gz ]; then
 		roi1=$rois/${pairs[$((i-1))]}.nii.gz
+		if [[ ${exclude} == true ]]; then
+			Exclusion=$rois/${exclus[$((i-1))]}.nii.gz
+			exclusion_line="-exclude ${Exclusion}"
+		else
+			exclusion_line=""
+		fi
 	else
 		roi1=$rois/ROI${pairs[$((i-1))]}.nii.gz
+		if [[ ${exclude} == true ]]; then
+			Exclusion=$rois/ROI${exclus[$((i-1))]}.nii.gz
+			exclusion_line="-exclude ${Exclusion}"
+		else
+			exclusion_line=""
+		fi
 	fi
 
 	if [[ ${multiple_seed} == true ]]; then
@@ -126,15 +145,18 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 		l1="-include ${roi1}"
 		l2="-include ${v1}"
 		l3=""
-		[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet &&  mrcalc $seed wm_dwi.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
+		if [[ ${act} == false ]]; then
+			[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet &&  mrcalc $seed wm_dwi.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
+		fi
 	else
 		seed=$roi1
 		l1="-include ${v1}"
 		l2=""
 		l3="-seed_unidirectional"
-		[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet && mrcalc $roi1 $v1 wm.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
+		if [[ ${act} == false ]]; then
+			[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet && mrcalc $roi1 $v1 -add temp_mask.nii.gz -force -quiet -nthreads $NCORE -quiet && mrcalc temp_mask.nii.gz wm.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
+		fi
 	fi
-
 
 	for LMAXS in ${lmaxs}; do
 		input_csd=$(eval "echo \$lmax${LMAXS}")
@@ -164,6 +186,7 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 								-cutoff ${FOD} \
 								-trials ${seed_max_trials} \
 								${l3} \
+								${exclusion_line} \
 								$output \
 								-force \
 								-nthreads $NCORE 
