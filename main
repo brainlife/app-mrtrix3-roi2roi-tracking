@@ -22,4 +22,11 @@ time singularity exec -e docker://brainlife/mrtrix3:3.0.0 ./run.sh
 
 time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/classificationGenerator
 
-mv *track_* track*.tck ./raw/
+if [ -f wmc/classification.mat ]; then
+        echo "complete"
+        mv *track_* track*.tck ./raw/
+        exit 0
+else
+        echo "failed"
+        exit 1
+fi
