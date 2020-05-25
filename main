@@ -2,6 +2,8 @@
 #PBS -l nodes=1:ppn=8,vmem=30gb,walltime=8:00:00
 #PBS -N app-trekker-roi-tracking
 
+time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./planeROI/generatePlaneROI
+
 time singularity exec -e docker://brainlife/mrtrix3:3.0.0 ./run.sh
 
 time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/classificationGenerator
