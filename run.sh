@@ -165,7 +165,6 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 								-cutoff ${FOD} \
 								-trials ${seed_max_trials} \
 								${l3} \
-								${exclusion_line} \
 								$output \
 								-force \
 								-nthreads $NCORE 
