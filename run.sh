@@ -40,13 +40,12 @@ step_size=`jq -r '.stepsize' config.json`
 min_length=`jq -r '.min_length' config.json`
 max_length=`jq -r '.max_length' config.json`
 act=`jq -r '.act' config.json`
-exclusion=`jq -r '.exclusion' config.json`
-v1=`jq -r '.v1' config.json`
+oc=`jq -r '.v1' config.json`
 
-if [ ! -f $rois/ROI${v1}.nii.gz ]; then
-	v1=$rois/${v1}.nii.gz
+if [ ! -f $rois/ROI${oc}.nii.gz ]; then
+	v1=$rois/${oc}.nii.gz
 else
-	v1=$rois/ROI${v1}.nii.gz
+	v1=$rois/ROI${oc}.nii.gz
 fi
 
 # parse whether dtiinit or dwi input
@@ -109,52 +108,32 @@ fi
 pairs=($roipair)
 nTracts=` expr ${#pairs[@]}`
 
-if [[ ! ${exclusion} == 'null' ]]; then
-	exclus=($exclusion)
-	exclude='true'
-else
-	exclus=""
-	exclude='false'
-fi
-
 for (( i=1; i<=$nTracts; i+=1 )); do
 	[ -f track$((i)).tck ] && continue
 
 	echo "creating seed for tract $((i))"
 	if [ ! -f $rois/ROI${pairs[$((i-1))]}.nii.gz ]; then
 		roi1=$rois/${pairs[$((i-1))]}.nii.gz
-		if [[ ${exclude} == true ]]; then
-			Exclusion=$rois/${exclus[$((i-1))]}.nii.gz
-			exclusion_line="-exclude ${Exclusion}"
-		else
-			exclusion_line=""
-		fi
 	else
 		roi1=$rois/ROI${pairs[$((i-1))]}.nii.gz
-		if [[ ${exclude} == true ]]; then
-			Exclusion=$rois/ROI${exclus[$((i-1))]}.nii.gz
-			exclusion_line="-exclude ${Exclusion}"
-		else
-			exclusion_line=""
-		fi
 	fi
 
 	if [[ ${multiple_seed} == true ]]; then
-		seed=seed_${pairs[$((i-1))]}_v1.nii.gz
-		[ ! -f $seed ] && mrcalc $roi1 $v1 -add $seed -force -quiet -nthreads $NCORE && fslmaths $seed -bin $seed
+		seed=seed_${pairs[$((i-1))]}_oc.nii.gz
+		[ ! -f $seed ] && mrcalc $roi1 $oc -add $seed -force -quiet -nthreads $NCORE && fslmaths $seed -bin $seed
 		l1="-include ${roi1}"
-		l2="-include ${v1}"
+		l2="-include ${oc}"
 		l3=""
 		if [[ ${act} == false ]]; then
 			[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet &&  mrcalc $seed wm_dwi.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
 		fi
 	else
-		seed=$roi1
-		l1="-include ${v1}"
+		seed=$oc
+		l1="-include ${roi1}"
 		l2=""
 		l3="-seed_unidirectional"
 		if [[ ${act} == false ]]; then
-			[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet && mrcalc $roi1 $v1 -add temp_mask.nii.gz -force -quiet -nthreads $NCORE -quiet && mrcalc temp_mask.nii.gz wm.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
+			[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet && mrcalc $roi1 $oc -add temp_mask.nii.gz -force -quiet -nthreads $NCORE -quiet && mrcalc temp_mask.nii.gz wm.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
 		fi
 	fi
 
