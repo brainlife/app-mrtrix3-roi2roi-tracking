@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#set -x
-#set -e
+set -x
+set -e
 
 NCORE=8
 
@@ -40,12 +40,12 @@ step_size=`jq -r '.stepsize' config.json`
 min_length=`jq -r '.min_length' config.json`
 max_length=`jq -r '.max_length' config.json`
 act=`jq -r '.act' config.json`
-oc=`jq -r '.v1' config.json`
+oc=`jq -r '.oc' config.json`
 
 if [ ! -f $rois/ROI${oc}.nii.gz ]; then
-	v1=$rois/${oc}.nii.gz
+	oc=$rois/${oc}.nii.gz
 else
-	v1=$rois/ROI${oc}.nii.gz
+	oc=$rois/ROI${oc}.nii.gz
 fi
 
 # parse whether dtiinit or dwi input
