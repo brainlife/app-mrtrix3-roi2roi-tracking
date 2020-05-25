@@ -187,6 +187,7 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 								-trials ${seed_max_trials} \
 								${l3} \
 								${exclusion_line} \
+								-include thalLatPost_${pairs[$((i-1))]}.nii.gz \
 								$output \
 								-force \
 								-nthreads $NCORE 
