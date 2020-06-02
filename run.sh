@@ -109,7 +109,7 @@ fi
 pairs=($roipair)
 nTracts=` expr ${#pairs[@]}`
 
-if [[ ! ${exclusion} == 'null' ]]; then
+if [[ ! ${exclusion} == "" ]]; then
 	exclus=($exclusion)
 	exclude='true'
 else
