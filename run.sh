@@ -189,7 +189,7 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 								${exclusion_line} \
 								-include thalLatPost_${pairs[$((i-1))]}.nii.gz \
 								-exclude thalMedPost_${pairs[$((i-1))]}.nii.gz \
-								-exclude thalMedPostSub_${pairs[$((i-1)).nii.gz \
+								-exclude thalMedPostSub_${pairs[$((i-1))]}.nii.gz \
 								$output \
 								-force \
 								-nthreads $NCORE 
