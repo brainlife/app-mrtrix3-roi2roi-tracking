@@ -154,6 +154,7 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 							algo="IFOD2"
 						elif [[ ${tracking_type} == 'deterministic' ]]; then
 							algo="SD_STREAM"
+							backtrack_line=""
 						fi
 						tckgen ${input_csd} \
 							-quiet \
