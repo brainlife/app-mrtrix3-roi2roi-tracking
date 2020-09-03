@@ -41,6 +41,7 @@ min_length=`jq -r '.min_length' config.json`
 max_length=`jq -r '.max_length' config.json`
 act=`jq -r '.act' config.json`
 oc=`jq -r '.oc' config.json`
+tracking_type=`jq -r '.tracking_type' config.json`
 
 if [ ! -f $rois/ROI${oc}.nii.gz ]; then
 	oc=$rois/${oc}.nii.gz
@@ -148,42 +149,47 @@ for (( i=1; i<=$nTracts; i+=1 )); do
 				for FOD in ${min_fod_amp}; do
 					echo "FOD amplitude ${FOD}"
 					if [ ! -f track$((i+1))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.vtk ]; then
-							output="track$((i))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.tck"
-							tckgen ${input_csd} \
-								-quiet \
-								-algorithm iFOD2 \
-								${act_line} \
-								${backtrack_line} \
-								-select ${count} \
-								-seed_image ${seed} \
-								${l1} \
-								${l2} \
-								-minlength ${min_length} \
-								-maxlength ${max_length} \
-								-step ${STEP} \
-								-angle ${CURV} \
-								-cutoff ${FOD} \
-								-trials ${seed_max_trials} \
-								${l3} \
-								$output \
-								-force \
-								-nthreads $NCORE 
-							fi
-					done
+						output="track$((i))_lmax${LMAXS}_curv${CURV}_step${STEP}_amp${FOD}.tck"
+						if [[ ${tracking_type} == 'ifod2' ]]; then
+							algo="IFOD2"
+						elif [[ ${tracking_type} == 'deterministic' ]]; then
+							algo="SD_STREAM"
+						fi
+						tckgen ${input_csd} \
+							-quiet \
+							-algorithm ${algo} \
+							${act_line} \
+							${backtrack_line} \
+							-select ${count} \
+							-seed_image ${seed} \
+							${l1} \
+							${l2} \
+							-minlength ${min_length} \
+							-maxlength ${max_length} \
+							-step ${STEP} \
+							-angle ${CURV} \
+							-cutoff ${FOD} \
+							-trials ${seed_max_trials} \
+							${l3} \
+							$output \
+							-force \
+							-nthreads $NCORE
+					fi
 				done
 			done
 		done
-		
-		output=track$((i)).tck
-		tcks=(track$((i))*.tck)
-		if [ ${#tcks[@]} == 1 ]; then
-			mv ${tcks[0]} $output
-		else
-			tckedit ${tcks[*]} $output
-			mv ${tcks[*]} ./raw/
-		fi
-		tckinfo $output > track_info$((i)).txt
 	done
+		
+	output=track$((i)).tck
+	tcks=(track$((i))*.tck)
+	if [ ${#tcks[@]} == 1 ]; then
+		mv ${tcks[0]} $output
+	else
+		tckedit ${tcks[*]} $output
+		mv ${tcks[*]} ./raw/
+	fi
+	tckinfo $output > track_info$((i)).txt
+done
 
 if [ -f track1.tck ]; then
 	mv *.mif *.b* *.nii.gz ./raw/
