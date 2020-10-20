@@ -100,8 +100,8 @@ The secondary output of this app is `product.json`. This file allows web interfa
 
 This App requires the following libraries when run locally. 
 
-- MrTrix3.0: 
-- Matlab: 
-- jsonlab: 
-- singularity: 
-- FSL: 
+- MRtrix3: https://mrtrix.readthedocs.io/en/3.0_rc3/installation/linux_install.html
+- Matlab: https://www.mathworks.com/help/install/install-products.html
+- jsonlab: https://github.com/fangq/jsonlab
+- singularity: https://singularity.lbl.gov/quickstart
+- FSL: https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation
