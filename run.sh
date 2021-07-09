@@ -171,7 +171,7 @@ for (( i=0; i<$nTracts; i+=1 )); do
 		l2=""
 		l3="-seed_unidirectional"
 		if [[ ${act} == false ]]; then
-			[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet && mrcalc $roi1 $roi2 -add temp_mask.nii.gz -force -quiet -nthreads $NCORE && mrcalc temp_mask.nii.gz wm.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
+			[ ! -f total_mask.nii.gz ] && mrtransform wm.nii.gz wm_dwi.nii.gz -template dwi.mif -interp nearest -force -nthreads $NCORE -quiet && mrcalc $roi1 $roi2 -add temp_mask.nii.gz -force -quiet -nthreads $NCORE && mrcalc temp_mask.nii.gz wm_dwi.nii.gz -add total_mask.nii.gz -force -quiet -nthreads $NCORE && fslmaths total_mask.nii.gz -bin total_mask.nii.gz
 		fi
 	fi
 
