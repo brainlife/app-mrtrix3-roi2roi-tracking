@@ -14,8 +14,18 @@ roiPair = strtrim(config.roiPair)
 % Set tck file path/s
 disp('merging tcks')
 tcks=dir('track*.tck')
-for ii = 1:length(tcks); 
-    fgPath{ii} = tcks(ii).name;
+jj=1;
+kk=1;
+for ii = 1:length(tcks)
+    fgtmp = fgRead(fullfile(tcks(ii).folder,tcks(ii).name));
+    if length(fgtmp.fibers) > 0
+        fgPath{jj} = tcks(ii).name;
+        jj=jj+1;
+    else
+        display(sprintf('track %s has 0 streamlines',tcks(ii).name))
+        missing_tracts{kk} = tcks(ii).name;
+        kk=kk+1;
+    end
 end
 disp(fgPath)
 [mergedFG, classification]=bsc_mergeFGandClass(fgPath);
@@ -30,10 +40,17 @@ end
 
 % Amend name of tract in classification structure
 roiPair = split(roiPair);
-for ii = 1:length(roiPair)/2
-    classification.names{ii} = strcat('ROI_',roiPair{(2*ii) - 1},'_ROI_',roiPair{(2*ii)});
+% for ii = 1:length(roiPair)/2
+%     classification.names{ii} = strcat('ROI_',roiPair{(2*ii) - 1},'_ROI_',roiPair{(2*ii)});
+% end
+for ii = 1:length(classification.names)
+    jj = (2*str2num(extractAfter(classification.names{ii},'track')))-1;
+    kk = str2num(extractAfter(classification.names{ii},'track'))*2;
+    roi_names = [roiPair(jj),roiPair(kk)];
+    classification.names{ii} = strcat('ROI_',roi_names{1},'_ROI_',roi_names{2});
 end
 save('wmc/classification.mat','classification')
+save('wmc/missing_tracts.mat','missing_tracts')
 
 % split up fg again to create tracts.json
 fg_classified = bsc_makeFGsFromClassification_v4(classification,mergedFG);
