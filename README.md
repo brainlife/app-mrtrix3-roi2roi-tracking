@@ -10,14 +10,14 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="MIT license"></a>
 </p>
 
-> 📍 **This branch, `v1.0`, runs 2 brainlife.io Apps** that share the same code:
+> **This branch, `v1.0`, runs 2 brainlife.io Apps** that share the same code:
 >
 > - Mrtrix3 iFOD2 ROI Tracking (dtiinit) ([doi:10.25663/brainlife.app.339](https://doi.org/10.25663/brainlife.app.339)) (deprecated)
 > - Mrtrix3 iFOD2 ROI Tracking (dwi) ([doi:10.25663/brainlife.app.337](https://doi.org/10.25663/brainlife.app.337))
 >
 > The other Apps in this repository are listed under **Versions on brainlife.io** below.
 
-## 🧠 At a glance
+## At a glance
 
 <!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
@@ -27,14 +27,14 @@ Runs MRtrix3 tckgen between each requested seed/termination ROI pair, optionally
 
 | | |
 |---|---|
-| 📥 **Inputs** | `neuro/dwi` · `neuro/csd` · `neuro/rois` · `neuro/mask` (optional) ×3 · `neuro/anat/t1w` |
-| 📤 **Outputs** | `neuro/track/tck` · `neuro/wmc` · `neuro/mask` ×2 |
-| 🐳 **Container** | `brainlife/freesurfer-mini:6.0.1` |
-| ⚙️ **Resources** | 8 CPUs · 30 GB memory · 8 h walltime |
-| 🔑 **Requires** | `FREESURFER_LICENSE` |
-| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.337](https://doi.org/10.25663/brainlife.app.337) |
+| **Inputs** | `neuro/dwi` · `neuro/csd` · `neuro/rois` · `neuro/mask` (optional) ×3 · `neuro/anat/t1w` |
+| **Outputs** | `neuro/track/tck` · `neuro/wmc` · `neuro/mask` ×2 |
+| **Container** | `brainlife/freesurfer-mini:6.0.1` |
+| **Resources** | 8 CPUs · 30 GB memory · 8 h walltime |
+| **Requires** | `FREESURFER_LICENSE` |
+| **Run it** | [doi.org/10.25663/brainlife.app.337](https://doi.org/10.25663/brainlife.app.337) |
 
-#### 📥 Inputs
+#### Inputs
 
 | Input | Datatype | Required | Description |
 |---|---|---|---|
@@ -46,7 +46,7 @@ Runs MRtrix3 tckgen between each requested seed/termination ROI pair, optionally
 | `anat` | `neuro/anat/t1w` | yes | This is the path to the anatomical t1w image. This is only used if a 5tt mask has not been provided |
 | `wm_mask` | `neuro/mask` (white_matter) | no | This is the path to the precomputed white matter mask. if left empty, one will be generated automatically |
 
-#### 📤 Outputs
+#### Outputs
 
 | Output | Datatype | Description |
 |---|---|---|
@@ -56,7 +56,7 @@ Runs MRtrix3 tckgen between each requested seed/termination ROI pair, optionally
 | `5tt` | `neuro/mask` | This is the 5tt gen output. If input was used, this is just a copy and doesn't need to be archived. |
 
 <details>
-<summary><b>⚙️ Parameters</b> (14)</summary>
+<summary><b>Parameters</b> (14)</summary>
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -79,7 +79,7 @@ Runs MRtrix3 tckgen between each requested seed/termination ROI pair, optionally
 
 <!-- brainlife-app:end -->
 
-## 🏷️ Versions on brainlife.io
+## Versions on brainlife.io
 
 Each App is built from its own branch of this repository.
 
@@ -93,9 +93,9 @@ Each App is built from its own branch of this repository.
 | Track the Human Optic RAdiation - mrtrix3 iFOD2 (dtiinit) | LGN to V1, dtiInit input | [`thora-v1.0`](https://github.com/brainlife/app-mrtrix3-roi2roi-tracking/tree/thora-v1.0) | [doi:10.25663/brainlife.app.348](https://doi.org/10.25663/brainlife.app.348) | deprecated |
 | **Mrtrix3 iFOD2 ROI Tracking (dtiinit)** (this branch) | ROI pairs, dtiInit input | [`v1.0`](https://github.com/brainlife/app-mrtrix3-roi2roi-tracking/tree/v1.0) | [doi:10.25663/brainlife.app.339](https://doi.org/10.25663/brainlife.app.339) | deprecated |
 
-## 🚀 Running the App
+## Running the App
 
-### ☁️ On brainlife.io
+### On brainlife.io
 
 Open the App at [doi.org/10.25663/brainlife.app.407](https://doi.org/10.25663/brainlife.app.407) (or another App from the table) and choose, from your project, a `neuro/dwi` dataset, the matching `neuro/csd` dataset (CSD images for each lmax and the response), a `neuro/rois` dataset and a 5-tissue-type `neuro/mask`. A brain mask and a white-matter mask are optional; if left empty they are generated. Then set the ROIs and press **Execute**.
 
@@ -106,7 +106,7 @@ Open the App at [doi.org/10.25663/brainlife.app.407](https://doi.org/10.25663/br
 
 ROIs must be on the DWI grid and aligned with it. ROIs from the *Generate ROIs in dMRI space* App already are; for the generic ROI tracking App, set `reslice` when the ROIs come from elsewhere. The outputs are a `neuro/track/tck` tractogram, a `neuro/wmc` classification and the brain mask.
 
-### 💻 Locally
+### Locally
 
 You need [Singularity/Apptainer](https://apptainer.org/) and [`jq`](https://jqlang.github.io/jq/). MRtrix3 3.0.0 and the compiled MATLAB classification step (MATLAB Runtime R2017a) run inside containers.
 
@@ -149,7 +149,7 @@ You need [Singularity/Apptainer](https://apptainer.org/) and [`jq`](https://jqla
    ./main
    ```
 
-## 📦 Outputs
+## Outputs
 
 ```text
 track/
@@ -161,11 +161,11 @@ brainmask/                  brain mask (a copy of the input if one was given)
 raw/                        per-run tractograms, track_info files and intermediate images
 ```
 
-## 🩺 Troubleshooting
+## Troubleshooting
 
 - **`tracking did not generate. please check derivatives and log files for debugging`**: no streamlines were produced. Check that the ROI names match files in the `rois` dataset and that the ROIs are on the DWI grid; try turning `act` off or relaxing the curvature.
 
-## 📚 Citing
+## Citing
 
 > [!TIP]
 > If you use this App in your work, please cite the App, the software it builds on and brainlife.io (below). GitHub's **Cite this repository** button gives the App citation in APA and BibTeX.
@@ -178,13 +178,13 @@ raw/                        per-run tractograms, track_info files and intermedia
 - Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
 - Avesani P, McPherson B, Hayashi S, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. *Scientific Data* 6:69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
 
-## 👥 Authors
+## Authors
 
 - Brad Caron
 
 **Contributors:** Soichi Hayashi, Brent McPherson
 
-## 💰 Funding
+## Funding
 
 [![Wellcome-226486/Z/22/Z](https://img.shields.io/badge/Wellcome-226486%2FZ%2F22%2FZ-purple.svg)](https://wellcome.org/)
 [![NIH-NINDS-U24NS140384](https://img.shields.io/badge/NIH_NINDS-U24NS140384-green.svg)](https://reporter.nih.gov/project-details/11261037)
@@ -203,6 +203,6 @@ raw/                        per-run tractograms, track_info files and intermedia
 
 <sub>brainlife.io is publicly funded, and acknowledging that support helps keep it running. This App was developed with support from Wellcome, the U.S. National Institutes of Health (including the BRAIN Initiative BRAIN CONNECTS program: The Axonal Projectome EXchange, U24NS140384, and the Center for Mesoscale Connectomics, UM1NS132207) and the U.S. National Science Foundation.</sub>
 
-## ⚖️ License
+## License
 
 [MIT](LICENSE). MRtrix3 itself is distributed under its own [license](https://www.mrtrix.org/).
